@@ -1,16 +1,41 @@
+# https://github.com/keycloak/keycloak-containers/blob/master/docker-compose-examples/keycloak-mysql.yml
+
+volumes:
+  mysql_data:
+    driver: local
+
 services:
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: keycloak
+      MYSQL_USER: keycloak
+      MYSQL_PASSWORD: password
   keycloak:
-    image: quay.io/keycloak/keycloak:12.0.4
+    image: quay.io/keycloak/keycloak:latest
     container_name: keycloak
     environment:
       JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
       KEYCLOAK_USER: admin
       KEYCLOAK_PASSWORD: admin
+#      DB_VENDOR: h2
+      DB_VENDOR: MYSQL
+      DB_ADDR: mysql
+      DB_DATABASE: keycloak
+      DB_USER: keycloak
+      DB_PASSWORD: password
     ports:
-      - 8080:8080
       - 5005:5005
+      - 8080:8080
     volumes:
       - source: ./providers/target/providers-jar-with-dependencies.jar
         target: /opt/jboss/keycloak/standalone/deployments/providers-jar-with-dependencies.jar
         type: bind
-
+    depends_on:
+      - mysql

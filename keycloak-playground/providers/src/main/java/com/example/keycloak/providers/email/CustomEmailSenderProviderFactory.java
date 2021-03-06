@@ -29,6 +29,8 @@ public class CustomEmailSenderProviderFactory implements EmailSenderProviderFact
 
   @Override
   public String getId() {
-    return "telefonica";
+    return "default";
+    // a value different than default doesn't work
+//    return "custom";
   }
 }
