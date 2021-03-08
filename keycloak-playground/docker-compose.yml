@@ -19,6 +19,7 @@ services:
       MYSQL_PASSWORD: password
   keycloak:
     image: quay.io/keycloak/keycloak:latest
+#    image: quay.io/keycloak/keycloak:9.0.3
     container_name: keycloak
     environment:
       JAVA_TOOL_OPTIONS: -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005
