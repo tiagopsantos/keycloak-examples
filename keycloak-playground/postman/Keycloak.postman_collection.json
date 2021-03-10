@@ -1,0 +1,418 @@
+{
+	"info": {
+		"_postman_id": "c0ff827e-9402-4077-b0db-b718a9ede1cc",
+		"name": "Keycloak",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/auth/realms/{realm}",
+			"item": [
+				{
+					"name": "/native-login-actions/reset-credentials",
+					"item": [
+						{
+							"name": "/reset-credentials",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", () => {\r",
+											"  pm.response.to.have.status(401)\r",
+											"  var responseJson = pm.response.json()\r",
+											"  pm.collectionVariables.set(\"action_url\", responseJson.challenges[0].actionUrl)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "admin-cli",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "10194964",
+											"description": "10038666 | 10194964 | 42538137",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "121215",
+											"type": "text"
+										},
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										},
+										{
+											"key": "notes",
+											"value": "",
+											"description": "client_id=admin-cli&username=41992043&password=121241&grant_type=password",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{realm-url}}/native-login-actions/reset-credentials?client_id=mobile-client",
+									"host": [
+										"{{realm-url}}"
+									],
+									"path": [
+										"native-login-actions",
+										"reset-credentials"
+									],
+									"query": [
+										{
+											"key": "client_id",
+											"value": "mobile-client"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/reset-credentials :: username",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 401\", () => {\r",
+											"  pm.response.to.have.status(401)\r",
+											"  var responseJson = pm.response.json()\r",
+											"  pm.collectionVariables.set(\"action_url\", responseJson.challenges[0].actionUrl)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "username",
+											"value": "10194964",
+											"description": "10038666 | 10194964 | 42538137",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{auth-root-url}}{{action_url}}",
+									"host": [
+										"{{auth-root-url}}{{action_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/reset-credentials :: otp",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "otp",
+											"value": "123456",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{auth-root-url}}{{action_url}}",
+									"host": [
+										"{{auth-root-url}}{{action_url}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "/protocol/openid-connect",
+					"item": [
+						{
+							"name": "/token",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"  pm.response.to.have.status(200)\r",
+											"  var responseJson = pm.response.json()\r",
+											"  pm.collectionVariables.set(\r",
+											"    \"access_token\", responseJson.access_token)\r",
+											"  pm.collectionVariables.set(\r",
+											"    \"refresh_token\", responseJson.refresh_token)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "{{client-id}}",
+											"description": "{{client-id}} | admin-cli | account",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client-secret}}",
+											"description": "{{client-secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "user",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "user",
+											"type": "text"
+										},
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{oidc-token-url}}",
+									"host": [
+										"{{oidc-token-url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/token/introspect",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"  pm.response.to.have.status(200)\r",
+											"  var responseJson = pm.response.json()\r",
+											"  pm.collectionVariables.set(\r",
+											"    \"access_token\", responseJson.access_token)\r",
+											"  pm.collectionVariables.set(\r",
+											"    \"refresh_token\", responseJson.refresh_token)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "{{client-id}}",
+											"description": "{{client-id}} | admin-cli | account",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "{{client-secret}}",
+											"description": "{{client-secret}}",
+											"type": "text"
+										},
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "text"
+										},
+										{
+											"key": "!NOTE!",
+											"value": "",
+											"description": "Only works on client with secret",
+											"type": "text",
+											"disabled": true
+										}
+									]
+								},
+								"url": {
+									"raw": "{{oidc-token-url}}/introspect",
+									"host": [
+										"{{oidc-token-url}}"
+									],
+									"path": [
+										"introspect"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "/user-info",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Status code is 200\", () => {\r",
+											"  pm.response.to.have.status(200)\r",
+											"  var responseJson = pm.response.json()\r",
+											"  pm.collectionVariables.set(\"access_token\", responseJson.access_token)\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{access_token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "urlencoded",
+									"urlencoded": [
+										{
+											"key": "client_id",
+											"value": "admin-cli",
+											"description": "{{client-id}} | admin-cli | account",
+											"type": "text"
+										},
+										{
+											"key": "client_secret",
+											"value": "",
+											"description": "{{client-secret}}",
+											"type": "text"
+										},
+										{
+											"key": "username",
+											"value": "user",
+											"type": "text"
+										},
+										{
+											"key": "password",
+											"value": "user",
+											"type": "text"
+										},
+										{
+											"key": "grant_type",
+											"value": "password",
+											"type": "text"
+										}
+									]
+								},
+								"url": {
+									"raw": "{{realm-url}}/protocol/openid-connect/userinfo",
+									"host": [
+										"{{realm-url}}"
+									],
+									"path": [
+										"protocol",
+										"openid-connect",
+										"userinfo"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "/.well-known/openid-configuration",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{realm-url}}/.well-known/openid-configuration",
+							"host": [
+								"{{realm-url}}"
+							],
+							"path": [
+								".well-known",
+								"openid-configuration"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "action_url",
+			"value": ""
+		},
+		{
+			"key": "refresh_token",
+			"value": ""
+		}
+	]
+}

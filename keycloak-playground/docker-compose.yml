@@ -33,7 +33,7 @@ services:
       DB_PASSWORD: password
     ports:
       - 5005:5005
-      - 8080:8080
+      - 8180:8080
     volumes:
       - source: ./providers/target/providers-jar-with-dependencies.jar
         target: /opt/jboss/keycloak/standalone/deployments/providers-jar-with-dependencies.jar
