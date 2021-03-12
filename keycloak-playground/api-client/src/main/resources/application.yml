@@ -1,0 +1,15 @@
+logging:
+  level:
+    root: INFO
+    com.example.keycloak: DEBUG
+
+keycloak:
+  api:
+    url: http://localhost:8180/auth/
+    client-id: manage-users-client
+    client-secret: 254292f4-d0f6-4b5c-9aa6-f937f7fb8281
+    grant-type: client_credentials
+#    client-id: dev-direct-grant-cli
+#    client-secret: 4dc7cf4c-621e-4b18-a0d1-542060909e49
+#    grant-type: client_credentials
+    realm: app
