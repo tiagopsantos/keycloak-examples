@@ -7,9 +7,9 @@ keycloak:
   api:
     url: http://localhost:8180/auth/
     client-id: manage-users-client
-    client-secret: 254292f4-d0f6-4b5c-9aa6-f937f7fb8281
+    client-secret: c87e8852-3119-4c93-a0f7-082520e1daa2
     grant-type: client_credentials
 #    client-id: dev-direct-grant-cli
-#    client-secret: 4dc7cf4c-621e-4b18-a0d1-542060909e49
+#    client-secret: 9ee6f35d-c4e5-4c1f-ba48-2b6b4b00e7d1
 #    grant-type: client_credentials
     realm: app
