@@ -1,5 +1,7 @@
 package com.example.keycloak.providers.email;
 
+import static java.util.Optional.ofNullable;
+
 import com.example.keycloak.providers.email.smtp.LocalSmtpServer;
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.Config;
@@ -13,7 +15,7 @@ import org.keycloak.models.KeycloakSessionFactory;
 public class LocalSmtpServerEventListenerProviderFactory implements
     EventListenerProviderFactory {
 
-  private LocalSmtpServer localSmtpServer = new LocalSmtpServer();
+  private LocalSmtpServer localSmtpServer;
 
   @Override
   public EventListenerProvider create(KeycloakSession session) {
@@ -23,16 +25,20 @@ public class LocalSmtpServerEventListenerProviderFactory implements
 
   @Override
   public void init(Scope scope) {
-    localSmtpServer.init(Config.scope(LocalSmtpServer.DEFAULT_SMTP_SERVER_CONFIG_SCOPE));
   }
 
   @Override
   public void postInit(KeycloakSessionFactory sessionFactory) {
+    localSmtpServer = new LocalSmtpServer(
+        Config.scope(LocalSmtpServer.DEFAULT_SMTP_SERVER_CONFIG_SCOPE),
+        sessionFactory);
+    localSmtpServer.start();
   }
 
   @Override
   public void close() {
-    localSmtpServer.stop();
+    ofNullable(localSmtpServer)
+        .ifPresent(LocalSmtpServer::stop);
   }
 
   @Override

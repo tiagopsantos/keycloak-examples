@@ -1,6 +1,8 @@
 package com.example.keycloak.providers.email.smtp;
 
-import org.subethamail.smtp.*;
+import org.subethamail.smtp.MessageContext;
+import org.subethamail.smtp.MessageHandler;
+import org.subethamail.smtp.MessageHandlerFactory;
 
 public class LogMessageHandlerFactory implements MessageHandlerFactory {
 

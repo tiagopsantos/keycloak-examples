@@ -12,16 +12,16 @@ public class LocalSmtpServerEventListenerProvider implements EventListenerProvid
 
   @Override
   public void onEvent(Event event) {
-    log.info("{}.onEvent :: {}", getClass().getSimpleName(), event);
+    // not needed
   }
 
   @Override
   public void onEvent(AdminEvent event, boolean includeRepresentation) {
-    log.info("{}.onEvent[admin] :: {}", getClass().getSimpleName(), event);
+    // not needed
   }
 
   @Override
   public void close() {
-    log.info("{}.close", getClass().getSimpleName());
+    // not needed
   }
 }
