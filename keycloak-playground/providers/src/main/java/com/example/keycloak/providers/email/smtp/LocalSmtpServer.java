@@ -24,6 +24,9 @@ public class LocalSmtpServer {
         getClass().getSimpleName(), port, debug);
 
     MessageHandlerFactory handlerFactory = new LogMessageHandlerFactory();
+//    MessageHandlerFactory handlerFactory = debug
+//        ? new LogMessageHandlerFactory()
+//        : new LogMessageHandlerFactory();
     smtpServer = new SMTPServer(handlerFactory);
     smtpServer.setPort(port);
     smtpServer.start();
