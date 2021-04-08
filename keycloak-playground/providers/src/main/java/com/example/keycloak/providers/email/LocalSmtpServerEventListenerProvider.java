@@ -1,20 +1,14 @@
 package com.example.keycloak.providers.email;
 
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.keycloak.email.EmailException;
-import org.keycloak.email.EmailSenderProvider;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
-import org.keycloak.events.EventListenerProviderFactory;
 import org.keycloak.events.admin.AdminEvent;
-import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.UserModel;
 
 @Slf4j
 @RequiredArgsConstructor
-public class DelegatingSmtpServerEventListenerProvider implements EventListenerProvider {
+public class LocalSmtpServerEventListenerProvider implements EventListenerProvider {
 
   @Override
   public void onEvent(Event event) {

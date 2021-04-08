@@ -1,33 +1,29 @@
 package com.example.keycloak.providers.email;
 
-import com.example.keycloak.providers.email.smtp.LogMessageHandlerFactory;
+import com.example.keycloak.providers.email.smtp.LocalSmtpServer;
 import lombok.extern.slf4j.Slf4j;
+import org.keycloak.Config;
 import org.keycloak.Config.Scope;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.EventListenerProviderFactory;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
-import org.subethamail.smtp.server.SMTPServer;
 
 @Slf4j
-public class DelegatingSmtpServerEventListenerProviderFactory implements
+public class LocalSmtpServerEventListenerProviderFactory implements
     EventListenerProviderFactory {
 
-  private SMTPServer smtpServer;
+  private LocalSmtpServer localSmtpServer = new LocalSmtpServer();
 
   @Override
   public EventListenerProvider create(KeycloakSession session) {
     log.info("{}.create", getClass().getSimpleName());
-    return new DelegatingSmtpServerEventListenerProvider();
+    return new LocalSmtpServerEventListenerProvider();
   }
 
   @Override
   public void init(Scope scope) {
-    log.info("{}.init :: SMTP Server :: starting", getClass().getSimpleName());
-    LogMessageHandlerFactory myFactory = new LogMessageHandlerFactory();
-    smtpServer = new SMTPServer(myFactory);
-    smtpServer.setPort(25000);
-    smtpServer.start();
+    localSmtpServer.init(Config.scope(LocalSmtpServer.DEFAULT_SMTP_SERVER_CONFIG_SCOPE));
   }
 
   @Override
@@ -36,12 +32,11 @@ public class DelegatingSmtpServerEventListenerProviderFactory implements
 
   @Override
   public void close() {
-    log.info("{}.close :: SMTP Server :: stopping", getClass().getSimpleName());
-    smtpServer.stop();
+    localSmtpServer.stop();
   }
 
   @Override
   public String getId() {
-    return "delegating-smtp-server";
+    return "local-smtp-server";
   }
 }
