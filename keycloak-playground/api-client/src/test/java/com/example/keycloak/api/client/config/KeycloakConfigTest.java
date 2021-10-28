@@ -9,7 +9,6 @@ import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(classes = KeycloakConfig.class)
 @Slf4j
@@ -29,7 +28,9 @@ class KeycloakConfigTest {
   void realmResource() {
     assertThat(realmResource).isNotNull();
 
-    realmResource.users().list().forEach(user ->
-        log.info("user: {}", ReflectionToStringBuilder.toString(user)));
+    realmResource.users()
+        .list()
+        .forEach(user ->
+            log.info("user: {}", ReflectionToStringBuilder.toString(user)));
   }
 }
