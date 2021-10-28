@@ -20,11 +20,13 @@ public class KeycloakConfig {
   @Bean
   public Keycloak keycloak() {
     return KeycloakBuilder.builder()
-        .serverUrl(properties.getUrl())
+        .serverUrl(properties.getServerUrl())
         .realm(properties.getRealm())
-        .grantType(properties.getGrantType())
+        .username(properties.getUsername())
+        .password(properties.getPassword())
         .clientId(properties.getClientId())
         .clientSecret(properties.getClientSecret())
+        .grantType(properties.getGrantType())
         .build();
   }
 

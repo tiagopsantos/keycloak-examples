@@ -7,10 +7,12 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class KeycloakApiConfig {
 
-  private String url;
+  private String serverUrl;
+  private String realm;
+  private String username;
+  private String password;
   private String clientId;
   private String clientSecret;
   private String grantType;
-  private String realm;
 
 }
