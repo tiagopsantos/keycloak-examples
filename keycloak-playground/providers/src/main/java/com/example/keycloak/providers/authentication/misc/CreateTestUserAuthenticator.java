@@ -6,6 +6,8 @@ import org.keycloak.authentication.Authenticator;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.services.resources.admin.UsersResource;
+import org.keycloak.services.resources.admin.permissions.AdminPermissionEvaluator;
 
 @RequiredArgsConstructor
 public class CreateTestUserAuthenticator implements Authenticator {

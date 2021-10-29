@@ -9,7 +9,7 @@
 //import org.junit.Test;
 //import org.junit.runner.RunWith;
 //import org.keycloak.admin.client.resource.RealmResource;
-//import org.keycloak.admin.client.resource.UserResource;
+//import org.keycloak.admin.client.resource.UserHandler;
 //import org.keycloak.admin.client.resource.UsersResource;
 //import org.keycloak.representations.idm.RealmRepresentation;
 //import org.keycloak.representations.idm.UserRepresentation;
@@ -54,7 +54,7 @@
 //        .bruteForceUserStatus(user.getId());
 //    log.info("bruteForceUserStatus: {}", bruteForceUserStatus);
 //
-//    UserResource userResource = usersResource.get(user.getId());
+//    UserHandler userResource = usersResource.get(user.getId());
 //    UserRepresentation changes = new UserRepresentation();
 //    changes.setEmail("test@bb.com");
 //    changes.setEmailVerified(true);
