@@ -1,0 +1,2 @@
+com.example.keycloak.providers.authentication.misc.CreateTestUserAuthenticatorFactory
+com.example.keycloak.providers.authentication.misc.GetTestUserAuthenticatorFactory

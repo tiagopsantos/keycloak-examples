@@ -33,6 +33,8 @@ services:
       DB_PASSWORD: password
       KEYCLOAK_SMTP_SERVER_PORT: "25000"
       KEYCLOAK_SMTP_SERVER_DEBUG: "true"
+      keycloak.authentication.createTestUser.username: "testuser-dummy"
+      keycloak.authentication.getTestUser.username: "testuser-dummy"
     ports:
       - 8180:8080
       - 5005:5005
