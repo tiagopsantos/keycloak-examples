@@ -1,37 +1,42 @@
 package com.example.keycloak.providers.authentication.misc;
 
+import static java.util.Optional.ofNullable;
+
+import com.example.keycloak.providers.config.ConfigProviders;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import javax.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
-import org.apache.http.HttpEntity;
 import org.apache.http.HttpHeaders;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.ResponseHandler;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.keycloak.Config.Scope;
 import org.keycloak.authentication.AuthenticationFlowContext;
 import org.keycloak.authentication.AuthenticationFlowError;
 import org.keycloak.authentication.Authenticator;
-import org.keycloak.common.util.ResteasyProvider;
-import org.keycloak.connections.httpclient.HttpClientProvider;
+import org.keycloak.authentication.AuthenticatorFactory;
+import org.keycloak.models.AuthenticationExecutionModel.Requirement;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.provider.ProviderConfigProperty;
 import org.keycloak.representations.idm.UserRepresentation;
 
 @RequiredArgsConstructor
-public class CreateTestUserByApiAuthenticator implements Authenticator {
+public class CreateTestUserByApiAuthenticator implements Authenticator, AuthenticatorFactory {
 
-  private final String username;
-  private final HttpClient httpClient;
+  private String username;
+  private HttpClient httpClient;
   private final ObjectMapper objectMapper = new ObjectMapper();
 
+  @Override
+  public String getId() {
+    return "create-test-user-by-api";
+  }
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
@@ -62,10 +67,6 @@ public class CreateTestUserByApiAuthenticator implements Authenticator {
     }
   }
 
-  private CloseableHttpClient getHttpClient() {
-    return HttpClients.custom().build();
-  }
-
   @Override
   public void action(AuthenticationFlowContext authenticationFlowContext) {
     // not used
@@ -92,4 +93,58 @@ public class CreateTestUserByApiAuthenticator implements Authenticator {
   public void close() {
     // not used
   }
+
+  @Override
+  public void init(Scope config) {
+    Scope scopedConfig = ConfigProviders.environment().scope("authentication.createTestUser");
+    username = ofNullable(scopedConfig.get("username"))
+        .orElse("testuser");
+    httpClient = HttpClients.custom().build();
+  }
+
+  @Override
+  public void postInit(KeycloakSessionFactory factory) {
+    // not used
+  }
+
+  @Override
+  public Authenticator create(KeycloakSession session) {
+    return this;
+  }
+
+  @Override
+  public String getReferenceCategory() {
+    return null;
+  }
+
+  @Override
+  public boolean isConfigurable() {
+    return false;
+  }
+
+  @Override
+  public Requirement[] getRequirementChoices() {
+    return Requirement.values();
+  }
+
+  @Override
+  public boolean isUserSetupAllowed() {
+    return true;
+  }
+
+  @Override
+  public String getDisplayType() {
+    return "Create Test User by Api";
+  }
+
+  @Override
+  public String getHelpText() {
+    return getDisplayType();
+  }
+
+  @Override
+  public List<ProviderConfigProperty> getConfigProperties() {
+    return List.of();
+  }
+
 }

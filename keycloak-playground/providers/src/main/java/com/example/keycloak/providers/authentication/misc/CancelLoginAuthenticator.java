@@ -1,8 +1,5 @@
 package com.example.keycloak.providers.authentication.misc;
 
-import static java.util.Optional.ofNullable;
-
-import com.example.keycloak.providers.config.ConfigProviders;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.Config.Scope;
@@ -14,30 +11,22 @@ import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
+import org.keycloak.models.utils.FormMessage;
 import org.keycloak.provider.ProviderConfigProperty;
+import org.keycloak.services.messages.Messages;
 
 @RequiredArgsConstructor
-public class CreateTestUserAuthenticator implements Authenticator, AuthenticatorFactory {
-
-  private String username;
-
+public class CancelLoginAuthenticator implements Authenticator, AuthenticatorFactory {
 
   @Override
   public String getId() {
-    return "create-test-user";
+    return "cancel-login";
   }
-
 
   @Override
   public void authenticate(AuthenticationFlowContext context) {
-    UserModel userModel = context.getSession().users()
-        .addUser(context.getRealm(), username);
-    userModel.setFirstName(username);
-    userModel.setEnabled(true);
-    if (context.getUser() == null) {
-      context.setUser(userModel);
-    }
-    context.success();
+    context.forkWithSuccessMessage(new FormMessage(Messages.ACCOUNT_UPDATED));
+//    context.cancelLogin();
   }
 
   @Override
@@ -69,9 +58,7 @@ public class CreateTestUserAuthenticator implements Authenticator, Authenticator
 
   @Override
   public void init(Scope config) {
-    Scope scopedConfig = ConfigProviders.environment().scope("authentication.createTestUser");
-    username = ofNullable(scopedConfig.get("username"))
-        .orElse("testuser");
+    // not used
   }
 
   @Override
@@ -106,7 +93,7 @@ public class CreateTestUserAuthenticator implements Authenticator, Authenticator
 
   @Override
   public String getDisplayType() {
-    return "Create Test User";
+    return "Cancel Login";
   }
 
   @Override
