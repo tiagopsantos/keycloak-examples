@@ -15,11 +15,11 @@ public class CustomEmailSenderProvider implements EmailSenderProvider {
   private final KeycloakSession session;
 
   @Override
-  public void send(Map<String, String> config, UserModel user, String subject, String textBody,
+  public void send(Map<String, String> config, String address, String subject, String textBody,
       String htmlBody) throws EmailException {
     try {
       log.info("{}.send :: {} | {} | {} | {} | {}",
-          getClass().getSimpleName(), config, user, subject, textBody, htmlBody);
+          getClass().getSimpleName(), config, address, subject, textBody, htmlBody);
     } catch (Exception e) {
       throw new EmailException(e);
     }
@@ -27,5 +27,6 @@ public class CustomEmailSenderProvider implements EmailSenderProvider {
 
   @Override
   public void close() {
+    // ignored
   }
 }
