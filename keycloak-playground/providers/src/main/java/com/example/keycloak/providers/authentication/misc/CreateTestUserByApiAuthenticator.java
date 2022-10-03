@@ -29,9 +29,9 @@ import org.keycloak.representations.idm.UserRepresentation;
 @RequiredArgsConstructor
 public class CreateTestUserByApiAuthenticator implements Authenticator, AuthenticatorFactory {
 
+  private final ObjectMapper objectMapper = new ObjectMapper();
   private String username;
   private HttpClient httpClient;
-  private final ObjectMapper objectMapper = new ObjectMapper();
 
   @Override
   public String getId() {

@@ -8,7 +8,6 @@ import java.io.InputStream;
 import java.time.Duration;
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentMap;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -36,48 +35,11 @@ import reactor.core.scheduler.Schedulers;
 @Slf4j
 class SMTPServerTest {
 
-  @RequiredArgsConstructor
-  static class TestMessageHandlerFactory implements MessageHandlerFactory {
-    private final Map<String, String> contextData;
-
-    public MessageHandler create(MessageContext ctx) {
-      return new TestMessageHandler();
-    }
-
-    class TestMessageHandler implements MessageHandler {
-
-      @Override
-      public void from(String from) throws RejectException {
-        // not required
-      }
-
-      @Override
-      public void recipient(String recipient) throws RejectException {
-        // not required
-      }
-
-      @Override
-      public void data(InputStream data) throws RejectException, TooMuchDataException, IOException {
-        try {
-          Session session = Session.getInstance(new Properties());
-          MimeMessage mimeMessage = new MimeMessage(session, data);
-          contextData.put(mimeMessage.getSubject(), mimeMessage.getMessageID());
-        } catch (MessagingException e) {
-          throw new IOException(e);
-        }
-      }
-
-      @Override
-      public void done() {
-        // not required
-      }
-    }
-  }
-
   @Test
   void test() throws MessagingException {
     Map<String, String> mailsContextData = Maps.newConcurrentMap();
-    TestMessageHandlerFactory messageHandlerFactory = new TestMessageHandlerFactory(mailsContextData);
+    TestMessageHandlerFactory messageHandlerFactory = new TestMessageHandlerFactory(
+        mailsContextData);
     SMTPServer smtpServer = new SMTPServer(messageHandlerFactory);
     smtpServer.setPort(2500);
     smtpServer.start();
@@ -94,8 +56,11 @@ class SMTPServerTest {
         .publishOn(Schedulers.boundedElastic())
         .log()
         .doOnNext(id -> {
-              try { sendMail(id, mailProperties); }
-              catch (Exception e) { Exceptions.propagate(e); }
+          try {
+            sendMail(id, mailProperties);
+          } catch (Exception e) {
+            Exceptions.propagate(e);
+          }
         })
         .collectList()
         .block();
@@ -132,6 +97,45 @@ class SMTPServerTest {
     message.setContent(multipart);
 
     Transport.send(message);
+  }
+
+  @RequiredArgsConstructor
+  static class TestMessageHandlerFactory implements MessageHandlerFactory {
+
+    private final Map<String, String> contextData;
+
+    public MessageHandler create(MessageContext ctx) {
+      return new TestMessageHandler();
+    }
+
+    class TestMessageHandler implements MessageHandler {
+
+      @Override
+      public void from(String from) throws RejectException {
+        // not required
+      }
+
+      @Override
+      public void recipient(String recipient) throws RejectException {
+        // not required
+      }
+
+      @Override
+      public void data(InputStream data) throws RejectException, TooMuchDataException, IOException {
+        try {
+          Session session = Session.getInstance(new Properties());
+          MimeMessage mimeMessage = new MimeMessage(session, data);
+          contextData.put(mimeMessage.getSubject(), mimeMessage.getMessageID());
+        } catch (MessagingException e) {
+          throw new IOException(e);
+        }
+      }
+
+      @Override
+      public void done() {
+        // not required
+      }
+    }
   }
 
 }

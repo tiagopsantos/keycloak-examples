@@ -2,14 +2,11 @@ package com.example.keycloak.api.client.api;
 
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
 import javax.ws.rs.core.Response.Status.Family;
 import lombok.RequiredArgsConstructor;
 import org.keycloak.admin.client.Keycloak;
 import org.keycloak.admin.client.resource.RealmResource;
-import org.keycloak.admin.client.resource.UserResource;
 import org.keycloak.representations.idm.UserRepresentation;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -39,11 +36,12 @@ public class UserHandler {
   public Mono<ServerResponse> postUser(ServerRequest serverRequest) {
     return serverRequest.bodyToMono(UserRepresentation.class)
         .flatMap(user -> {
-          Response response = realmResource.users().create(user);
-          boolean success = response.getStatusInfo().getFamily() == Family.SUCCESSFUL;
-          return success
-              ? ServerResponse.noContent().build()
-              : ServerResponse.status(response.getStatus()).build();
+          try (Response response = realmResource.users().create(user)) {
+            boolean success = response.getStatusInfo().getFamily() == Family.SUCCESSFUL;
+            return success
+                ? ServerResponse.noContent().build()
+                : ServerResponse.status(response.getStatus()).build();
+          }
         });
   }
 

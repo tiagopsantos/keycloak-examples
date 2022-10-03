@@ -6,7 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.keycloak.email.EmailException;
 import org.keycloak.email.EmailSenderProvider;
 import org.keycloak.models.KeycloakSession;
-import org.keycloak.models.UserModel;
 
 @Slf4j
 @RequiredArgsConstructor
