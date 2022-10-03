@@ -1,13 +1,13 @@
 package com.example.keycloak.providers.email.smtp;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.jbosslog.JBossLog;
 import org.keycloak.Config.Scope;
 import org.keycloak.models.KeycloakSessionFactory;
 import org.subethamail.smtp.MessageHandlerFactory;
 import org.subethamail.smtp.server.SMTPServer;
 
-@Slf4j
+@JBossLog
 @RequiredArgsConstructor
 public class LocalSmtpServer {
 
@@ -17,10 +17,10 @@ public class LocalSmtpServer {
   private SMTPServer smtpServer;
 
   public void start() {
-    log.info("{}.init :: SMTP Server :: starting", getClass().getSimpleName());
+    log.infof("%s.init :: SMTP Server :: starting", getClass().getSimpleName());
     Integer port = scopedConfig.getInt("port", 25);
     boolean debug = scopedConfig.getBoolean("debug", false);
-    log.info("{}.init :: SMTP Server :: using port={} | debug={}",
+    log.infof("%s.init :: SMTP Server :: using port=%s | debug=%s",
         getClass().getSimpleName(), port, debug);
 
     MessageHandlerFactory handlerFactory = new LogMessageHandlerFactory();
@@ -33,7 +33,7 @@ public class LocalSmtpServer {
   }
 
   public void stop() {
-    log.info("{}.close :: SMTP Server :: stopping", getClass().getSimpleName());
+    log.infof("%s.close :: SMTP Server :: stopping", getClass().getSimpleName());
     smtpServer.stop();
   }
 

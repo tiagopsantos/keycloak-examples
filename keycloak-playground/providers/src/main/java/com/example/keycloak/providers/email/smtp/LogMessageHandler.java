@@ -21,13 +21,13 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.ws.rs.core.MediaType;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.jbosslog.JBossLog;
 import org.subethamail.smtp.MessageContext;
 import org.subethamail.smtp.MessageHandler;
 import org.subethamail.smtp.RejectException;
 
 @RequiredArgsConstructor
-@Slf4j
+@JBossLog
 class LogMessageHandler implements MessageHandler {
 
   private final MessageContext messageContext;
@@ -35,12 +35,12 @@ class LogMessageHandler implements MessageHandler {
 
   @Override
   public void from(String from) throws RejectException {
-    log.info("FROM: {}", from);
+    log.infof("FROM: %s", from);
   }
 
   @Override
   public void recipient(String recipient) throws RejectException {
-    log.info("RECIPIENT: {}", recipient);
+    log.infof("RECIPIENT: %s", recipient);
   }
 
   @Override
@@ -56,12 +56,12 @@ class LogMessageHandler implements MessageHandler {
       Function<Address[], String> toStringAddresses = addresses ->
           Arrays.stream(addresses).map(Address::toString).collect(Collectors.joining());
 
-      log.info("MAIL DATA{}{}{}{}{}{}",
+      log.infof("MAIL DATA%s%s%s%s%s%s",
           lineSeparator,
           separator, lineSeparator,
           message, lineSeparator,
           separator);
-      log.info("mimeMessage :: subject:{} | from:{} | to:{} | body:{}",
+      log.infof("mimeMessage :: subject:%s | from:%s | to:%s | body:%s",
           mimeMessage.getSubject(),
           toStringAddresses.apply(mimeMessage.getFrom()),
           toStringAddresses.apply(mimeMessage.getRecipients(RecipientType.TO)),
@@ -106,7 +106,7 @@ class LogMessageHandler implements MessageHandler {
         }
       }
     }
-    log.debug("emailBody :: html={} | textBody={}", htmlBody, textBody);
+    log.debugf("emailBody :: html=%s | textBody=%s", htmlBody, textBody);
     return ofNullable(htmlBody).orElse(textBody);
   }
 

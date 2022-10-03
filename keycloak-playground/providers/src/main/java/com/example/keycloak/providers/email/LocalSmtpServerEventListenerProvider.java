@@ -1,12 +1,12 @@
 package com.example.keycloak.providers.email;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import lombok.extern.jbosslog.JBossLog;
 import org.keycloak.events.Event;
 import org.keycloak.events.EventListenerProvider;
 import org.keycloak.events.admin.AdminEvent;
 
-@Slf4j
+@JBossLog
 @RequiredArgsConstructor
 public class LocalSmtpServerEventListenerProvider implements EventListenerProvider {
 

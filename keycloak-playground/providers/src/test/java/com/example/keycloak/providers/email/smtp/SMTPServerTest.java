@@ -18,6 +18,7 @@ import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.jbosslog.JBossLog;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.junit.jupiter.api.Test;
@@ -32,7 +33,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
-@Slf4j
+@JBossLog
 class SMTPServerTest {
 
   @Test
@@ -59,7 +60,7 @@ class SMTPServerTest {
           try {
             sendMail(id, mailProperties);
           } catch (Exception e) {
-            Exceptions.propagate(e);
+            throw Exceptions.propagate(e);
           }
         })
         .collectList()
@@ -69,7 +70,7 @@ class SMTPServerTest {
 
     assertThat(mailsContextData)
         .hasSize(messageCount);
-    log.debug("data: {}", mailsContextData);
+    log.debugf("data: %s", mailsContextData);
   }
 
   private Mono<Integer> processValue(Integer value) {
