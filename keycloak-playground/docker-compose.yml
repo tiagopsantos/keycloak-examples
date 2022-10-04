@@ -23,6 +23,7 @@ services:
     container_name: keycloak
     command:
       - start-dev
+#      - start
     # See: https://www.keycloak.org/server/containers
     environment:
       DEBUG: "true"
@@ -31,6 +32,7 @@ services:
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HEALTH_ENABLED: "true"
+#      KC_HOSTNAME: localhost
 
       # Database
 #      KC_DB: dev-file
@@ -46,7 +48,7 @@ services:
       keycloak.authentication.createTestUser.username: "testuser-dummy"
       keycloak.authentication.getTestUser.username: "testuser-dummy"
     ports:
-      - 8180:8080
+      - 8080:8080
       - 5005:5005
     volumes:
       - source: ./providers/target/providers-jar-with-dependencies.jar

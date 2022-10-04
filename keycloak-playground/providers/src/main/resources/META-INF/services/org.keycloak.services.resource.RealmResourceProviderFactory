@@ -1,1 +1,1 @@
-com.example.keycloak.providers.rest.GreetingRealmResource$ProviderFactory
+com.example.keycloak.providers.rest.GreetingResourceProviderFactory
