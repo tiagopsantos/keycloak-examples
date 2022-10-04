@@ -1,7 +1,6 @@
 package com.example.keycloak.providers.rest;
 
 import java.time.OffsetDateTime;
-import java.util.Map;
 import java.util.stream.Stream;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAuthorizedException;
@@ -53,12 +52,17 @@ public class UserResourceProvider implements RealmResourceProvider {
     return this;
   }
 
+  /**
+   * @see org.keycloak.models.UserProvider#getUsersStream(RealmModel)
+   * @see org.keycloak.models.UserProvider#getUsersStream(RealmModel, boolean)
+   * @see org.keycloak.models.UserProvider#getUsersStream(RealmModel, Integer, Integer, boolean)
+   */
   @GET
   @Produces(MediaType.APPLICATION_JSON)
   public Stream<UserRepresentation> getUsers(@PathParam("realm") String realmValue) {
     var realm = session.getContext().getRealm();
     return session.users()
-        .searchForUserStream(realm, Map.of())
+        .getUsersStream(realm, false)
         .map(user -> {
           var representation = new UserRepresentation();
           representation.setId(user.getId());
@@ -97,7 +101,9 @@ public class UserResourceProvider implements RealmResourceProvider {
    */
   protected AdminAuth authenticateRealmAdminRequest(HttpHeaders headers) {
     String tokenString = AppAuthManager.extractAuthorizationHeaderToken(headers);
-    if (tokenString == null) throw new NotAuthorizedException("Bearer");
+    if (tokenString == null) {
+      throw new NotAuthorizedException("Bearer");
+    }
     AccessToken token;
     try {
       JWSInput input = new JWSInput(tokenString);
@@ -113,7 +119,8 @@ public class UserResourceProvider implements RealmResourceProvider {
     }
     session.getContext().setRealm(realm);
 
-    AuthenticationManager.AuthResult authResult = new AppAuthManager.BearerTokenAuthenticator(session)
+    AuthenticationManager.AuthResult authResult = new AppAuthManager.BearerTokenAuthenticator(
+        session)
         .setRealm(realm)
         .setConnection(clientConnection)
         .setHeaders(headers)
@@ -124,7 +131,8 @@ public class UserResourceProvider implements RealmResourceProvider {
       throw new NotAuthorizedException("Bearer");
     }
 
-    return new AdminAuth(realm, authResult.getToken(), authResult.getUser(), authResult.getClient());
+    return new AdminAuth(realm, authResult.getToken(), authResult.getUser(),
+        authResult.getClient());
   }
 
 }
