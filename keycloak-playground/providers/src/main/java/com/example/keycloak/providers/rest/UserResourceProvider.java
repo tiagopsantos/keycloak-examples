@@ -95,22 +95,21 @@ public class UserResourceProvider implements RealmResourceProvider {
   @PUT
   @Path("/{id}/required-actions")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response putRequiredActions(@PathParam("realm") String realmValue,
+  public Response updateRequiredActions(@PathParam("realm") String realmValue,
       @PathParam("id") String id, PutRequiredActionsRequest request) {
     var realm = session.getContext().getRealm();
     var user = session.users().getUserById(realm, id);
-
     authenticateRealmAdmin().users().requireManage(user);
 
     updateUserRequiredActions(user, request);
-//    user.setSingleAttribute("touchedAt", OffsetDateTime.now().toString());
+
     return Response.noContent().build();
   }
 
   @PUT
   @Path("/required-actions")
   @Produces(MediaType.APPLICATION_JSON)
-  public Response putRequiredActions(@PathParam("realm") String realmValue,
+  public Response updateRequiredActions(@PathParam("realm") String realmValue,
       PutRequiredActionsRequest request) {
     authenticateRealmAdmin().users().requireManage();
 
@@ -120,6 +119,7 @@ public class UserResourceProvider implements RealmResourceProvider {
           var user = session.users().getUserById(realm, userRef.getId());
           updateUserRequiredActions(user, request);
         });
+
     return Response.noContent().build();
   }
 
