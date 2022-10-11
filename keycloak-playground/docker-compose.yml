@@ -24,7 +24,9 @@ services:
     command:
       - start-dev
 #      - start
+      - --log-level=INFO,com.example.keycloak:DEBUG
     # See: https://www.keycloak.org/server/containers
+    # See: https://www.keycloak.org/server/logging
     environment:
       DEBUG: "true"
       DEBUG_PORT: "*:5005"
@@ -33,6 +35,10 @@ services:
       KEYCLOAK_ADMIN_PASSWORD: admin
       KC_HEALTH_ENABLED: "true"
 #      KC_HOSTNAME: localhost
+
+      # Seems to be ignored
+#      ROOT_LOGLEVEL: DEBUG
+#      KEYCLOAK_LOGLEVEL: DEBUG
 
       # Database
 #      KC_DB: dev-file
@@ -43,10 +49,13 @@ services:
       KC_DB_PASSWORD: password
 
       # Custom app vars
-      KEYCLOAK_SMTP_SERVER_PORT: "25000"
-      KEYCLOAK_SMTP_SERVER_DEBUG: "true"
-      keycloak.authentication.createTestUser.username: "testuser-dummy"
-      keycloak.authentication.getTestUser.username: "testuser-dummy"
+      # NOTE: Prefix is KC (previously KEYCLOAK)
+      KC_SMTP_SERVER_PORT: "25000"
+      KC_SMTP_SERVER_DEBUG: "true"
+      KC_CONFIG_PROPS_USERNAME: "some_username"
+      KC_CONFIG_PROPS_PASSWORD: "some_password"
+      kc.authentication.createTestUser.username: "testuser-dummy"
+      kc.authentication.getTestUser.username: "testuser-dummy"
     ports:
       - 8080:8080
       - 5005:5005
