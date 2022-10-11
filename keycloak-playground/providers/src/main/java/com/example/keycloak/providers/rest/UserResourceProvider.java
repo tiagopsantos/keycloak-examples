@@ -1,6 +1,9 @@
 package com.example.keycloak.providers.rest;
 
+import com.example.keycloak.providers.rest.model.PutRequiredActionsRequest;
+import com.example.keycloak.providers.rest.model.PutRequiredActionsRequest.Mode;
 import java.time.OffsetDateTime;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.ws.rs.GET;
 import javax.ws.rs.NotAuthorizedException;
@@ -22,6 +25,7 @@ import org.keycloak.jose.jws.JWSInput;
 import org.keycloak.jose.jws.JWSInputException;
 import org.keycloak.models.KeycloakSession;
 import org.keycloak.models.RealmModel;
+import org.keycloak.models.UserModel;
 import org.keycloak.representations.AccessToken;
 import org.keycloak.representations.account.UserRepresentation;
 import org.keycloak.services.managers.AppAuthManager;
@@ -50,6 +54,11 @@ public class UserResourceProvider implements RealmResourceProvider {
   public Object getResource() {
     ResteasyProviderFactory.getInstance().injectProperties(this);
     return this;
+  }
+
+  @Override
+  public void close() {
+    // not required
   }
 
   /**
@@ -83,9 +92,47 @@ public class UserResourceProvider implements RealmResourceProvider {
     return Response.noContent().build();
   }
 
-  @Override
-  public void close() {
-    // not required
+  @PUT
+  @Path("/{id}/required-actions")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response putRequiredActions(@PathParam("realm") String realmValue,
+      @PathParam("id") String id, PutRequiredActionsRequest request) {
+    var realm = session.getContext().getRealm();
+    var user = session.users().getUserById(realm, id);
+
+    authenticateRealmAdmin().users().requireManage(user);
+
+    updateUserRequiredActions(user, request);
+//    user.setSingleAttribute("touchedAt", OffsetDateTime.now().toString());
+    return Response.noContent().build();
+  }
+
+  @PUT
+  @Path("/required-actions")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response putRequiredActions(@PathParam("realm") String realmValue,
+      PutRequiredActionsRequest request) {
+    authenticateRealmAdmin().users().requireManage();
+
+    var realm = session.getContext().getRealm();
+    session.users().getUsersStream(realm, false)
+        .forEach(userRef -> {
+          var user = session.users().getUserById(realm, userRef.getId());
+          updateUserRequiredActions(user, request);
+        });
+    return Response.noContent().build();
+  }
+
+  private static void updateUserRequiredActions(UserModel user, PutRequiredActionsRequest request) {
+    if (request.getMode() == Mode.ADD) {
+      request.getActions().forEach(user::addRequiredAction);
+    } else if (request.getMode() == Mode.REMOVE) {
+      request.getActions().forEach(user::removeRequiredAction);
+    } else if (request.getMode() == Mode.REPLACE) {
+      var currentActions = user.getRequiredActionsStream().collect(Collectors.toList());
+      currentActions.forEach(user::removeRequiredAction);
+      request.getActions().forEach(user::addRequiredAction);
+    }
   }
 
   private AdminPermissionEvaluator authenticateRealmAdmin() {
