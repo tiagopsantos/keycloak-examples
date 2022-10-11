@@ -8,14 +8,12 @@ import org.keycloak.Config.SystemPropertiesScope;
 
 public class EnvironmentScope extends SystemPropertiesScope implements Scope {
 
-  private final String prefix;
   private final Function<String, String> envVarFormatConverter = CaseFormat.LOWER_CAMEL
       .converterTo(CaseFormat.UPPER_UNDERSCORE)
       .andThen(v -> v.replace('.', '_'));
 
   public EnvironmentScope(String prefix) {
     super(prefix);
-    this.prefix = prefix;
   }
 
   @Override
