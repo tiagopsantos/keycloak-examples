@@ -1,9 +1,6 @@
 package com.example.keycloak.providers.config;
 
-import static java.util.Optional.ofNullable;
-
 import com.google.common.base.CaseFormat;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 import org.keycloak.Config.Scope;
@@ -11,12 +8,14 @@ import org.keycloak.Config.SystemPropertiesScope;
 
 public class EnvironmentScope extends SystemPropertiesScope implements Scope {
 
+  private final String prefix;
   private final Function<String, String> envVarFormatConverter = CaseFormat.LOWER_CAMEL
       .converterTo(CaseFormat.UPPER_UNDERSCORE)
       .andThen(v -> v.replace('.', '_'));
 
   public EnvironmentScope(String prefix) {
     super(prefix);
+    this.prefix = prefix;
   }
 
   @Override
@@ -43,10 +42,6 @@ public class EnvironmentScope extends SystemPropertiesScope implements Scope {
       sb.append(".");
     }
     return new EnvironmentScope(sb.toString());
-  }
-
-  private Optional<String> getEnvValue(String key) {
-    return ofNullable(System.getenv(key));
   }
 
 }
