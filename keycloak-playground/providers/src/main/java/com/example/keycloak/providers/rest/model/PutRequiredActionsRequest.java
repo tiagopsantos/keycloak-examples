@@ -14,8 +14,11 @@ public class PutRequiredActionsRequest {
 
   private List<String> actions;
   private Mode mode;
+  private String realm;
+  private Integer pageSize;
+  private boolean cacheEvict;
 
-  public static enum Mode {
+  public enum Mode {
     ADD, REMOVE, REPLACE
   }
 
