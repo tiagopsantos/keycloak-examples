@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.jbosslog.JBossLog;
 import org.keycloak.models.KeycloakSession;
+import org.keycloak.models.RealmModel;
 import org.keycloak.models.UserModel;
 import org.keycloak.models.cache.UserCache;
 
@@ -24,17 +25,18 @@ public class CustomUsersProvider {
     var pageSize = request.getPageSize();
     if (pageSize == null) {
       session.users().getUsersStream(realm, false)
-          .forEach(user -> updateUserRequiredActions(user, request));
+          .forEach(user -> updateUserRequiredActions(user, realm, request));
     } else {
       var userCount = session.users().getUsersCount(realm, false);
       for (var from = 0; from < userCount; from += pageSize) {
         session.users().getUsersStream(realm, from, pageSize, false)
-            .forEach(user -> updateUserRequiredActions(user, request));
+            .forEach(user -> updateUserRequiredActions(user, realm, request));
       }
     }
   }
 
-  public void updateUserRequiredActions(UserModel user, PutRequiredActionsRequest request) {
+  public void updateUserRequiredActions(
+      UserModel user, RealmModel realm, PutRequiredActionsRequest request) {
     if (request.getMode() == Mode.ADD) {
       request.getActions().forEach(user::addRequiredAction);
     } else if (request.getMode() == Mode.REMOVE) {
@@ -45,7 +47,7 @@ public class CustomUsersProvider {
       request.getActions().forEach(user::addRequiredAction);
     }
     if (request.isCacheEvict()) {
-      evictUserFromCacheIfPossible(user);
+      evictUserFromCacheIfPossible(user, realm);
     }
   }
 
@@ -55,8 +57,8 @@ public class CustomUsersProvider {
         .map(UserCache.class::cast);
   }
 
-  private void evictUserFromCacheIfPossible(UserModel user) {
-    userCache().ifPresent(cache -> cache.evict(session.getContext().getRealm(), user));
+  private void evictUserFromCacheIfPossible(UserModel user, RealmModel realm) {
+    userCache().ifPresent(cache -> cache.evict(realm, user));
   }
 
 }

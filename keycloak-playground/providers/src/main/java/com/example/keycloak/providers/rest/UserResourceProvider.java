@@ -101,7 +101,7 @@ public class UserResourceProvider implements RealmResourceProvider {
     authenticateRealmAdmin().users().requireManage(user);
 
     request.setRealm(realmValue);
-    customUsersProvider.updateUserRequiredActions(user, request);
+    customUsersProvider.updateUserRequiredActions(user, realm, request);
 
     return Response.noContent().build();
   }
