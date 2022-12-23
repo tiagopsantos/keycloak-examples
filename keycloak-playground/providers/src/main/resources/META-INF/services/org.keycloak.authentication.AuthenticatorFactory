@@ -1,4 +1,0 @@
-com.example.keycloak.providers.authentication.misc.CreateTestUserAuthenticator
-com.example.keycloak.providers.authentication.misc.CreateTestUserByApiAuthenticator
-com.example.keycloak.providers.authentication.misc.GetTestUserAuthenticator
-com.example.keycloak.providers.authentication.misc.CancelLoginAuthenticator
